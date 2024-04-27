@@ -224,38 +224,39 @@ const getTopCustomers = {
 //   },
 // };
 
-// const getFilePathSchema = yup.object({
-//   filePath: yup.string().label("filePath").required("should be a file path"),
-// });
-// const getFilePathJSONSchema = yupToJsonSchema(getFilePathSchema);
-// const FILE_READER = {
-//   name: "file_reader",
-//   description:
-//     "returns the contents of a file given its filepath in the repository",
-//   category: "hackathon",
-//   subcategory: "communication",
-//   functionType: "backend",
-//   dangerous: false,
-//   associatedCommands: [],
-//   prerequisites: [],
-//   parameters: getFilePathJSONSchema,
-//   rerun: true,
-//   rerunWithDifferentParameters: true,
-//   runCmd: async ({ filePath }) => {
-//     try {
-//       const buffer = fs.readFileSync(filePath);
-//       const fileContents = buffer.toString("utf8");
-//       return fileContents;
-//     } catch (error) {
-//       return "An error ocured while looking for the file content";
-//     }
-//   },
-// };
+const getFilePathSchema = yup.object({
+  filePath: yup.string().label("filePath").required("should be a file path"),
+});
+const getFilePathJSONSchema = yupToJsonSchema(getFilePathSchema);
+const FILE_READER = {
+  name: "file_reader",
+  description:
+    "returns the contents of a file given its filepath in the repository",
+  category: "hackathon",
+  subcategory: "communication",
+  functionType: "backend",
+  dangerous: false,
+  associatedCommands: [],
+  prerequisites: [],
+  parameters: getFilePathJSONSchema,
+  rerun: true,
+  rerunWithDifferentParameters: true,
+  runCmd: async ({ filePath }) => {
+    try {
+      const buffer = fs.readFileSync(filePath);
+      const fileContents = buffer.toString("utf8");
+      return fileContents;
+    } catch (error) {
+      return "An error ocured while looking for the file content";
+    }
+  },
+};
 
 const tools = [
   getAgentName,
   getSoldProperties,
   getNumSoldProperties,
   getTopCustomers,
+  FILE_READER,
 ];
 module.exports = tools;

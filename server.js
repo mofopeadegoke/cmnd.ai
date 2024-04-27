@@ -56,29 +56,9 @@ app.post("/getAgent", async (req, res)=>{
 
 //returns the names of the properties that has been sold
 app.get("/getSold", async (req, res) => {
-    // try {
-    //     const soldPropertiesResult = await db.query("SELECT property_id FROM sold_properties");
-    //     const soldPropertiesIds = soldPropertiesResult.rows.map(row => row.property_id);
-    //     const soldProperties = [];
-    //     for (const id of soldPropertiesIds) {
-    //         try {
-    //             const propertyResult = await db.query("SELECT * FROM properties WHERE id = $1", [id]);
-    //             //console.log(`Property Result:`, propertyResult);
-    //             //console.log(`Property Rows: ${propertyResult.rows}`);
-    //             soldProperties.push(propertyResult.rows[0])
-    //         } catch (err) {
-    //             console.error("Error fetching property:", err);
-    //         }
-    //     }
-    //     //console.log(soldProperties);
-    //     res.json(soldProperties).status(200);
-    // } catch (err) {
-    //     console.error(err);
-    //     res.status(500).json("No properties sold");
-    // }
     try {
         const soldPropertiesResult = await db.query("SELECT * FROM sold_properties JOIN properties ON properties.id = property_id JOIN customers ON customers.id = customer_id JOIN agents ON agents.id = agent_id");
-        console.log(soldPropertiesResult.rows);
+        //console.log(soldPropertiesResult.rows);
         res.json(soldPropertiesResult.rows).status(200);
     } catch (err) {
         console.error(err);
@@ -86,16 +66,36 @@ app.get("/getSold", async (req, res) => {
     }
 });
 
+app.get("/getAll", async (req, res) => {
+    try {
+        const propertiesResult = await db.query("SELECT * FROM properties");
+        //console.log(propertiesResult);
+        res.json(propertiesResult.rows).status(200);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json("No properties sold");
+    }
+});
+
+app.get("/getTotalNum", async (req, res)=>{
+    try{
+        const result = await db.query("SELECT COUNT(DISTINCT id) AS total_properties FROM properties");
+        res.json(result.rows[0]).status(200);
+    }catch(err){
+        console.log(err);
+        res.sendStatus(500);
+    }
+});
+
+
 //returns the number of properties that has been sold
 app.get("/getNumSold", async (req, res)=>{
     try{
         const result = await db.query("SELECT COUNT(DISTINCT property_id) AS total_properties_sold FROM sold_properties");
-        const numOfProps = result.rows[0].total_properties_sold;
-        //console.log(numOfProps);
-        res.json(numOfProps);
+        res.json(result.rows[0]).status(200);
     }catch(err){
         console.log(err);
-        res.json("No property has been sold.");
+        res.json("No property has been sold.").status(500);
     }
 });
 
@@ -138,9 +138,8 @@ app.post("/getPrice", async(req, res)=>{
 
 app.get("/topCustomers", async (req,res)=>{
     try{
-        //const result = await db.query("SELECT customer_id, SUM(property_sold_amount) AS total_amount FROM sold_properties GROUP BY customer_id ORDER BY total_amount DESC");
         const result = await db.query("SELECT c.customer_fullname, c.customer_email, SUM(o.property_sold_amount) AS total_amount FROM customers c LEFT JOIN sold_properties o ON c.id = o.customer_id GROUP BY c.id, c.customer_fullname, c.customer_email ORDER BY total_amount DESC")
-        console.log(result.rows)
+        //console.log(result.rows)
         res.json(result.rows).status(200);
     }catch(err){
         console.log(err);
