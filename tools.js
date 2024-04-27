@@ -10,6 +10,8 @@ const yupToJsonSchema = require("./yupToJsonSchema");
 //
 // const getProductsJSONSchema = yupToJsonSchema(getProductSchema);
 
+// Schema for getAgentName tool
+
 // Defining the getAgentName Schema
 const getAgentNameSchema = yup.object({
   propertyName: yup
@@ -17,20 +19,31 @@ const getAgentNameSchema = yup.object({
     .label("propertyName")
     .required("should be a string"),
 });
-
 // JSON style of the getAgentName Schema
 const getAgentNameJSONSchema = yupToJsonSchema(getAgentNameSchema);
 
-// Defining the getAgentName Schema
+// Schema for getSoldProperties tools
+
+// Defining the getSoldProperties Schema
 const getSoldPropertiesSchema = yup.object({
-  propertyName: yup
+  property: yup.string().label("soldProperties").required("should be a string"),
+});
+// JSON style of the getSoldProperties Schema
+const getSoldPropertiesJSONSchema = yupToJsonSchema(getSoldPropertiesSchema);
+
+// Schema for getNumSoldProperties tools
+
+// Defining the getNumSoldProperties  Schema
+const getNumSoldPropertiesSchema = yup.object({
+  numProperty: yup
     .string()
-    .label("soldProperties")
+    .label("numOfsoldProperties")
     .required("should be a string"),
 });
-
-// JSON style of the getAgentName Schema
-const getSoldPropertiesJSONSchema = yupToJsonSchema(getSoldPropertiesSchema);
+// JSON style of the getNumSoldProperties  Schema
+const getNumSoldPropertiesJSONSchema = yupToJsonSchema(
+  getNumSoldPropertiesSchema
+);
 
 // getAgentName tool definition
 const getAgentName = {
@@ -80,6 +93,32 @@ const getSoldProperties = {
       console.log(propertyName);
       const { data } = await axios({
         url: `http://localhost:3000/getSold`,
+        method: "get",
+      });
+      return JSON.stringify(data);
+    } catch (err) {
+      return "Error trying to execute the tool";
+    }
+  },
+};
+
+// getSoldProperties tool definition
+const getNumSoldProperties = {
+  name: "get_num_sold_properties",
+  description: "Gets the numbers of the properties that have been sold",
+  category: "hackathon",
+  subcategory: "backend",
+  functionType: "backend",
+  dangerous: false,
+  associatedCommands: [],
+  prerequisites: [],
+  parameters: getNumSoldPropertiesJSONSchema,
+  rerun: true,
+  rerunWithDifferentParameters: true,
+  runCmd: async ({ numProperty }) => {
+    try {
+      const { data } = await axios({
+        url: `http://localhost:3000/getNumSold`,
         method: "get",
       });
       return JSON.stringify(data);
