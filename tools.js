@@ -4,10 +4,11 @@ const yup = require("yup");
 const fs = require("fs");
 const yupToJsonSchema = require("./yupToJsonSchema");
 
-const getProductSchema = yup.object({
-  product: yup.string().label("product").required("should be a string"),
-});
-const getProductsJSONSchema = yupToJsonSchema(getProductSchema);
+// const getProductSchema = yup.object({
+//   product: yup.string().label("product").required("should be a string"),
+// });
+//
+// const getProductsJSONSchema = yupToJsonSchema(getProductSchema);
 
 // Defining the getAgentName Schema
 const getAgentNameSchema = yup.object({
@@ -18,8 +19,20 @@ const getAgentNameSchema = yup.object({
 });
 
 // JSON style of the getAgentName Schema
-const getAgentNameProductsJSONSchema = yupToJsonSchema(getAgentNameSchema);
+const getAgentNameJSONSchema = yupToJsonSchema(getAgentNameSchema);
 
+// Defining the getAgentName Schema
+const getSoldPropertiesSchema = yup.object({
+  propertyName: yup
+    .string()
+    .label("soldProperties")
+    .required("should be a string"),
+});
+
+// JSON style of the getAgentName Schema
+const getSoldPropertiesJSONSchema = yupToJsonSchema(getSoldPropertiesSchema);
+
+// getAgentName tool definition
 const getAgentName = {
   name: "get_agent_name",
   description: "Gets the agent that sold a property",
@@ -29,7 +42,7 @@ const getAgentName = {
   dangerous: false,
   associatedCommands: [],
   prerequisites: [],
-  parameters: getAgentNameProductsJSONSchema,
+  parameters: getAgentNameJSONSchema,
   rerun: true,
   rerunWithDifferentParameters: true,
   runCmd: async ({ propertyName }) => {
@@ -37,10 +50,10 @@ const getAgentName = {
       console.log(propertyName);
       const { data } = await axios({
         url: `http://localhost:3000/getAgent`,
-        method: 'post',
+        method: "post",
         data: {
-          propertyName
-        }
+          propertyName,
+        },
       });
       return JSON.stringify(data);
     } catch (err) {
@@ -49,30 +62,57 @@ const getAgentName = {
   },
 };
 
-const PRODUCT_FINDER = {
-  name: "product_finder",
-  description:
-    "finds and returns dummy products details from json dummy datas based on the product name passed to it",
+// getSoldProperties tool definition
+const getSoldProperties = {
+  name: "get_sold_properties",
+  description: "Gets the names of the properties that have been sold",
   category: "hackathon",
-  subcategory: "communication",
+  subcategory: "backend",
   functionType: "backend",
   dangerous: false,
   associatedCommands: [],
   prerequisites: [],
-  parameters: getProductsJSONSchema,
+  parameters: getSoldPropertiesJSONSchema,
   rerun: true,
   rerunWithDifferentParameters: true,
-  runCmd: async ({ product }) => {
+  runCmd: async ({ propertyName }) => {
     try {
-      const { data } = await axios.get(
-        `https://dummyjson.com/products/search?q=${encodeURIComponent(product)}`
-      );
+      console.log(propertyName);
+      const { data } = await axios({
+        url: `http://localhost:3000/getSold`,
+        method: "get",
+      });
       return JSON.stringify(data);
     } catch (err) {
       return "Error trying to execute the tool";
     }
   },
 };
+
+// const PRODUCT_FINDER = {
+//   name: "product_finder",
+//   description:
+//     "finds and returns dummy products details from json dummy datas based on the product name passed to it",
+//   category: "hackathon",
+//   subcategory: "communication",
+//   functionType: "backend",
+//   dangerous: false,
+//   associatedCommands: [],
+//   prerequisites: [],
+//   parameters: getProductsJSONSchema,
+//   rerun: true,
+//   rerunWithDifferentParameters: true,
+//   runCmd: async ({ product }) => {
+//     try {
+//       const { data } = await axios.get(
+//         `https://dummyjson.com/products/search?q=${encodeURIComponent(product)}`
+//       );
+//       return JSON.stringify(data);
+//     } catch (err) {
+//       return "Error trying to execute the tool";
+//     }
+//   },
+// };
 
 // const weatherCitySchema = yup.object({
 //   city: yup.string().label("city").required("should be a string"),
