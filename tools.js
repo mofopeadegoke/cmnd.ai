@@ -57,6 +57,27 @@ const getTopCustomersSchema = yup.object({
 // JSON style of the getNumSoldProperties  Schema
 const getTopCustomersJSONSchema = yupToJsonSchema(getTopCustomersSchema);
 
+// Schema for getAllProperties tool
+
+// Defining the getAllProperties Schema
+const getAllPropertiesSchema = yup.object({
+  Property: yup.string().label("allProperties").required("should be a string"),
+});
+// JSON style of the getNumSoldProperties  Schema
+const getAllPropertiesJSONSchema = yupToJsonSchema(getAllPropertiesSchema);
+
+// Schema for getNumProperties tool
+
+// Defining the getNumProperties  Schema
+const getNumPropertiesSchema = yup.object({
+  numProperty: yup
+    .string()
+    .label("numOfProperties")
+    .required("should be a string"),
+});
+// JSON style of the getNumProperties  Schema
+const getNumPropertiesJSONSchema = yupToJsonSchema(getNumPropertiesSchema);
+
 // getAgentName tool definition
 const getAgentName = {
   name: "get_agent_name",
@@ -114,7 +135,7 @@ const getSoldProperties = {
   },
 };
 
-// getSoldProperties tool definition
+// getNumSoldProperties tool definition
 const getNumSoldProperties = {
   name: "get_num_sold_properties",
   description: "Gets the numbers of the properties that have been sold",
@@ -140,7 +161,7 @@ const getNumSoldProperties = {
   },
 };
 
-// getSoldProperties tool definition
+// getTopCustomers tool definition
 const getTopCustomers = {
   name: "get_top_customers",
   description: "Gets the top paying clients",
@@ -157,6 +178,59 @@ const getTopCustomers = {
     try {
       const { data } = await axios({
         url: `http://localhost:3000/topCustomers`,
+        method: "get",
+      });
+      return JSON.stringify(data);
+    } catch (err) {
+      return "Error trying to execute the tool";
+    }
+  },
+};
+
+// getAllProperties tool definition
+const getAllProperties = {
+  name: "get_all_properties",
+  description: "Gets all the properties the organization has",
+  category: "hackathon",
+  subcategory: "backend",
+  functionType: "backend",
+  dangerous: false,
+  associatedCommands: [],
+  prerequisites: [],
+  parameters: getAllPropertiesJSONSchema,
+  rerun: true,
+  rerunWithDifferentParameters: true,
+  runCmd: async ({ Property }) => {
+    try {
+      const { data } = await axios({
+        url: `http://localhost:3000/all`,
+        method: "get",
+      });
+      return JSON.stringify(data);
+    } catch (err) {
+      return "Error trying to execute the tool";
+    }
+  },
+};
+
+// getNumProperties tool definition
+const getNumProperties = {
+  name: "get_num_properties",
+  description:
+    "Gets the total number of the properties that the organization has",
+  category: "hackathon",
+  subcategory: "backend",
+  functionType: "backend",
+  dangerous: false,
+  associatedCommands: [],
+  prerequisites: [],
+  parameters: getNumPropertiesJSONSchema,
+  rerun: true,
+  rerunWithDifferentParameters: true,
+  runCmd: async ({ numProperty }) => {
+    try {
+      const { data } = await axios({
+        url: `http://localhost:3000/getTotalNum`,
         method: "get",
       });
       return JSON.stringify(data);
@@ -258,5 +332,7 @@ const tools = [
   getNumSoldProperties,
   getTopCustomers,
   FILE_READER,
+  getAllProperties,
+  getNumProperties,
 ];
 module.exports = tools;
