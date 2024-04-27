@@ -78,6 +78,26 @@ const getNumPropertiesSchema = yup.object({
 // JSON style of the getNumProperties  Schema
 const getNumPropertiesJSONSchema = yupToJsonSchema(getNumPropertiesSchema);
 
+// Schema for sendApprMail tool
+
+// Defining the sendApprMail Schema
+const sendApprMailSchema = yup.object({
+  customerName: yup
+    .string()
+    .label("customerName")
+    .required("should be a string"),
+  customerEmail: yup
+    .string()
+    .label("customerEmail")
+    .required("should be a string"),
+  propertyName: yup
+    .string()
+    .label("propertyName")
+    .required("should be a string"),
+});
+// JSON style of the sendApprMail Schema
+const sendApprMailJSONSchema = yupToJsonSchema(sendApprMailSchema);
+
 // getAgentName tool definition
 const getAgentName = {
   name: "get_agent_name",
@@ -205,6 +225,37 @@ const getAllProperties = {
       const { data } = await axios({
         url: `http://localhost:3000/getAll`,
         method: "get",
+      });
+      return JSON.stringify(data);
+    } catch (err) {
+      return "Error trying to execute the tool";
+    }
+  },
+};
+
+// sendApprMail tool definition
+const sendApprMail = {
+  name: "send_appr_mail",
+  description: "Sends appreciation mail to top customers",
+  category: "hackathon",
+  subcategory: "backend",
+  functionType: "backend",
+  dangerous: false,
+  associatedCommands: [],
+  prerequisites: [],
+  parameters: sendApprMailJSONSchema,
+  rerun: true,
+  rerunWithDifferentParameters: true,
+  runCmd: async ({ customerName, customerEmail, propertyName }) => {
+    try {
+      const { data } = await axios({
+        url: `http://localhost:3000/sendThanks`,
+        method: "post",
+        data: {
+          customerName,
+          customerEmail,
+          propertyName,
+        },
       });
       return JSON.stringify(data);
     } catch (err) {
