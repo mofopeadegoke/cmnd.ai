@@ -24,6 +24,7 @@ app.get("/", (req, res)=>{
     res.send("GROUP 4 HACAKATHON API");
 });
 
+//returns the agent name that sold a particular property
 app.post("/getAgent", async (req, res)=>{
     console.log(req.body);
     const propertyName = req.body.propertyName;
@@ -54,6 +55,7 @@ app.post("/getAgent", async (req, res)=>{
 });
 
 
+//returns the names of the properties that has been sold
 app.get("/getSold", async (req, res) => {
     try {
         const soldPropertiesResult = await db.query("SELECT property_id FROM sold_properties");
@@ -75,6 +77,30 @@ app.get("/getSold", async (req, res) => {
     }
 });
 
+//returns the number of properties that has been sold
+app.get("/getNumSold", async (req, res)=>{
+    try{
+        const result = await db.query("SELECT COUNT(DISTINCT property_id) AS total_properties_sold FROM sold_properties");
+        const numOfProps = result.rows[0].total_properties_sold;
+        //console.log(numOfProps);
+        res.json(numOfProps);
+    }catch(err){
+        console.log(err);
+        res.json("No property has been sold.");
+    }
+});
+
+app.get("/getNumRem", async (req, res)=>{
+    try{
+        const result = await db.query("SELECT COUNT(DISTINCT id) AS total_properties FROM properties");
+        console.log(result);
+        res.send(200);
+    }catch(err){
+        console.log(err);
+        res.json(err);
+    }
+})
+//returns the prices of properties that has been sold
 app.post("/getPrice", async(req, res)=>{
     try{
         const propertyName = req.body.propertyName;

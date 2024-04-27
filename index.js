@@ -1,10 +1,13 @@
 require("dotenv").config();
 const PORT = process.env.PORT || 8000;
 const express = require("express");
+const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const app = express();
 const tools = require("./tools");
+
 app.use(bodyParser.json());
+app.use(morgan("tiny"));
 
 app.get("/", (req, res)=>{
   res.send("Hello");
