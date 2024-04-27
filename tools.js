@@ -22,7 +22,7 @@ const getAgentNameSchema = yup.object({
 // JSON style of the getAgentName Schema
 const getAgentNameJSONSchema = yupToJsonSchema(getAgentNameSchema);
 
-// Schema for getSoldProperties tools
+// Schema for getSoldProperties tool
 
 // Defining the getSoldProperties Schema
 const getSoldPropertiesSchema = yup.object({
@@ -31,7 +31,7 @@ const getSoldPropertiesSchema = yup.object({
 // JSON style of the getSoldProperties Schema
 const getSoldPropertiesJSONSchema = yupToJsonSchema(getSoldPropertiesSchema);
 
-// Schema for getNumSoldProperties tools
+// Schema for getNumSoldProperties tool
 
 // Defining the getNumSoldProperties  Schema
 const getNumSoldPropertiesSchema = yup.object({
@@ -44,6 +44,18 @@ const getNumSoldPropertiesSchema = yup.object({
 const getNumSoldPropertiesJSONSchema = yupToJsonSchema(
   getNumSoldPropertiesSchema
 );
+
+// Schema for getTopCustomers tool
+
+// Defining the getNumSoldProperties  Schema
+const getTopCustomersSchema = yup.object({
+  Property: yup
+    .string()
+    .label("topCustomersList")
+    .required("should be a string"),
+});
+// JSON style of the getNumSoldProperties  Schema
+const getTopCustomersJSONSchema = yupToJsonSchema(getTopCustomersSchema);
 
 // getAgentName tool definition
 const getAgentName = {
@@ -119,6 +131,32 @@ const getNumSoldProperties = {
     try {
       const { data } = await axios({
         url: `http://localhost:3000/getNumSold`,
+        method: "get",
+      });
+      return JSON.stringify(data);
+    } catch (err) {
+      return "Error trying to execute the tool";
+    }
+  },
+};
+
+// getSoldProperties tool definition
+const getTopCustomers = {
+  name: "get_top_customers",
+  description: "Gets the top paying clients",
+  category: "hackathon",
+  subcategory: "backend",
+  functionType: "backend",
+  dangerous: false,
+  associatedCommands: [],
+  prerequisites: [],
+  parameters: getTopCustomersJSONSchema,
+  rerun: true,
+  rerunWithDifferentParameters: true,
+  runCmd: async ({ Property }) => {
+    try {
+      const { data } = await axios({
+        url: `http://localhost:3000/topCustomers`,
         method: "get",
       });
       return JSON.stringify(data);
@@ -214,5 +252,10 @@ const getNumSoldProperties = {
 //   },
 // };
 
-const tools = [getAgentName, getSoldProperties, getNumSoldProperties];
+const tools = [
+  getAgentName,
+  getSoldProperties,
+  getNumSoldProperties,
+  getTopCustomers,
+];
 module.exports = tools;
