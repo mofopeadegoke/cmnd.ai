@@ -47,7 +47,7 @@ const getAgentName = {
   rerunWithDifferentParameters: true,
   runCmd: async ({ propertyName }) => {
     try {
-      console.log(propertyName);
+      //console.log(propertyName);
       const { data } = await axios({
         url: `http://localhost:3000/getAgent`,
         method: "post",
@@ -175,5 +175,5 @@ const getSoldProperties = {
 //   },
 // };
 
-const tools = [getAgentName];
+const tools = [getAgentName, getSoldProperties];
 module.exports = tools;

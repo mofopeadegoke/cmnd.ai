@@ -32,26 +32,24 @@ app.post("/getAgent", async (req, res)=>{
     try{
         const result = await db.query("SELECT id FROM properties WHERE LOWER(name) LIKE '%' || $1 || '%'", [propertyName.toLowerCase()]);
         const propertyId = result.rows[0].id;
-        console.log(propertyId);
         try{
             const result = await db.query("SELECT agent_id FROM sold_properties WHERE property_id = $1", [propertyId]);
             const agentId = result.rows[0].agent_id;
-            console.log(agentId);
             try{
                 const result = await db.query("SELECT * FROM agents WHERE id = $1", [agentId]);
                 const agent = result.rows[0];
                 res.json(agent).status(200);
             }catch(err){
                 console.log(err);
-                res.json("Agent not found");
+                res.json("Agent not found").status(500);
             }
         }catch (err){
             console.log(err);
-            res.json("Property hasn't been sold");
+            res.json("Property hasn't been sold").status(500);
         }
     }catch(err){
         console.log(err);
-        res.json("Property doesn't exist");
+        res.json("Property doesn't exist").status(500);
     }
 });
 
@@ -61,17 +59,19 @@ app.get("/getSold", async (req, res) => {
     try {
         const soldPropertiesResult = await db.query("SELECT property_id FROM sold_properties");
         const soldPropertiesIds = soldPropertiesResult.rows.map(row => row.property_id);
-        const soldPropertiesNames = [];
+        const soldProperties = [];
         for (const id of soldPropertiesIds) {
             try {
-                const propertyResult = await db.query("SELECT name FROM properties WHERE id = $1", [id]);
-                soldPropertiesNames.push(propertyResult.rows[0].name);
+                const propertyResult = await db.query("SELECT * FROM properties WHERE id = $1", [id]);
+                //console.log(`Property Result:`, propertyResult);
+                //console.log(`Property Rows: ${propertyResult.rows}`);
+                soldProperties.push(propertyResult.rows[0])
             } catch (err) {
                 console.error("Error fetching property:", err);
             }
         }
-        //console.log(soldPropertiesNames);
-        res.json(soldPropertiesNames);
+        //console.log(soldProperties);
+        res.json(soldProperties).status(200);
     } catch (err) {
         console.error(err);
         res.status(500).json("No properties sold");
