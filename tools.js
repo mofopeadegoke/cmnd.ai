@@ -203,7 +203,7 @@ const getAllProperties = {
   runCmd: async ({ Property }) => {
     try {
       const { data } = await axios({
-        url: `http://localhost:3000/all`,
+        url: `http://localhost:3000/getAll`,
         method: "get",
       });
       return JSON.stringify(data);
@@ -298,7 +298,7 @@ const getNumProperties = {
 //   },
 // };
 
-const getFilePathSchema = yup.object({
+/*const getFilePathSchema = yup.object({
   filePath: yup.string().label("filePath").required("should be a file path"),
 });
 const getFilePathJSONSchema = yupToJsonSchema(getFilePathSchema);
@@ -324,14 +324,13 @@ const FILE_READER = {
       return "An error ocured while looking for the file content";
     }
   },
-};
+};*/
 
 const tools = [
   getAgentName,
   getSoldProperties,
   getNumSoldProperties,
   getTopCustomers,
-  FILE_READER,
   getAllProperties,
   getNumProperties,
 ];
