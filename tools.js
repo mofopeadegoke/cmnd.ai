@@ -90,7 +90,7 @@ const getSoldProperties = {
   rerunWithDifferentParameters: true,
   runCmd: async ({ propertyName }) => {
     try {
-      console.log(propertyName);
+      //console.log(propertyName);
       const { data } = await axios({
         url: `http://localhost:3000/getSold`,
         method: "get",
@@ -214,5 +214,5 @@ const getNumSoldProperties = {
 //   },
 // };
 
-const tools = [getAgentName, getSoldProperties];
+const tools = [getAgentName, getSoldProperties, getNumSoldProperties];
 module.exports = tools;
