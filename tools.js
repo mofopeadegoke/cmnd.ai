@@ -29,13 +29,18 @@ const getAgentName = {
   dangerous: false,
   associatedCommands: [],
   prerequisites: [],
-  parameters: getAgentNameSchema,
+  parameters: getAgentNameProductsJSONSchema,
   rerun: true,
   rerunWithDifferentParameters: true,
   runCmd: async ({ propertyName }) => {
     try {
-      const { data } = await axios.post(`http://localhost:3000/getAgent`, {
-        propertyName,
+      console.log(propertyName);
+      const { data } = await axios({
+        url: `http://localhost:3000/getAgent`,
+        method: 'post',
+        data: {
+          propertyName
+        }
       });
       return JSON.stringify(data);
     } catch (err) {
@@ -43,6 +48,7 @@ const getAgentName = {
     }
   },
 };
+
 const PRODUCT_FINDER = {
   name: "product_finder",
   description:
@@ -129,5 +135,5 @@ const PRODUCT_FINDER = {
 //   },
 // };
 
-// const tools = [FILE_READER, PRODUCT_FINDER, WEATHER_FROM_LOCATION];
-// module.exports = tools;
+const tools = [getAgentName];
+module.exports = tools;

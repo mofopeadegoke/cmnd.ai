@@ -17,7 +17,8 @@ const db = new pg.Client({
 
 db.connect();
 
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(morgan("tiny"));
 
 app.get("/", (req, res)=>{
@@ -37,8 +38,8 @@ app.post("/getAgent", async (req, res)=>{
             const agentId = result.rows[0].agent_id;
             console.log(agentId);
             try{
-                const result = await db.query("SELECT fullname FROM agents WHERE id = $1", [agentId]);
-                const agent = result.rows[0].fullname;
+                const result = await db.query("SELECT * FROM agents WHERE id = $1", [agentId]);
+                const agent = result.rows[0];
                 res.json(agent).status(200);
             }catch(err){
                 console.log(err);
