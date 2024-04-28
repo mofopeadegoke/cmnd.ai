@@ -135,13 +135,13 @@ const getAllAgentsSchema = yup.object({
 // JSON style of the getAllAgents Schema
 const getAllAgentsSchemaJSONSchema = yupToJsonSchema(getAllAgentsSchema);
 
-// Schema for getTopCustomers tool
+// Schema for getTopAgents tool
 
-// Defining the getNumSoldProperties  Schema
+// Defining the getTopAgentsProperties  Schema
 const getTopAgentsSchema = yup.object({
   Property: yup.string().label("topAgentsList").required("should be a string")
 });
-// JSON style of the getNumSoldProperties  Schema
+// JSON style of the getTopAgentsProperties  Schema
 const getTopAgentsJSONSchema = yupToJsonSchema(getTopAgentsSchema);
 
 //DEFINING TOOLS
@@ -255,7 +255,7 @@ const getTopCustomers = {
   }
 };
 
-// getTopCustomers tool definition
+// getTopAgents tool definition
 const getTopAgents = {
   name: "get_top_agents",
   description:
