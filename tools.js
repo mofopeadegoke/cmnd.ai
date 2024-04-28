@@ -17,7 +17,7 @@ const getAgentNameSchema = yup.object({
   propertyName: yup
     .string()
     .label("propertyName")
-    .required("should be a string"),
+    .required("should be a string")
 });
 // JSON style of the getAgentName Schema
 const getAgentNameJSONSchema = yupToJsonSchema(getAgentNameSchema);
@@ -26,7 +26,7 @@ const getAgentNameJSONSchema = yupToJsonSchema(getAgentNameSchema);
 
 // Defining the getSoldProperties Schema
 const getSoldPropertiesSchema = yup.object({
-  property: yup.string().label("soldProperties").required("should be a string"),
+  property: yup.string().label("soldProperties").required("should be a string")
 });
 // JSON style of the getSoldProperties Schema
 const getSoldPropertiesJSONSchema = yupToJsonSchema(getSoldPropertiesSchema);
@@ -38,7 +38,7 @@ const getNumSoldPropertiesSchema = yup.object({
   numProperty: yup
     .string()
     .label("numOfsoldProperties")
-    .required("should be a string"),
+    .required("should be a string")
 });
 // JSON style of the getNumSoldProperties  Schema
 const getNumSoldPropertiesJSONSchema = yupToJsonSchema(
@@ -52,7 +52,7 @@ const getTopCustomersSchema = yup.object({
   Property: yup
     .string()
     .label("topCustomersList")
-    .required("should be a string"),
+    .required("should be a string")
 });
 // JSON style of the getNumSoldProperties  Schema
 const getTopCustomersJSONSchema = yupToJsonSchema(getTopCustomersSchema);
@@ -61,7 +61,7 @@ const getTopCustomersJSONSchema = yupToJsonSchema(getTopCustomersSchema);
 
 // Defining the getAllProperties Schema
 const getAllPropertiesSchema = yup.object({
-  Property: yup.string().label("allProperties").required("should be a string"),
+  Property: yup.string().label("allProperties").required("should be a string")
 });
 // JSON style of the getNumSoldProperties  Schema
 const getAllPropertiesJSONSchema = yupToJsonSchema(getAllPropertiesSchema);
@@ -73,7 +73,7 @@ const getNumPropertiesSchema = yup.object({
   numProperty: yup
     .string()
     .label("numOfProperties")
-    .required("should be a string"),
+    .required("should be a string")
 });
 // JSON style of the getNumProperties  Schema
 const getNumPropertiesJSONSchema = yupToJsonSchema(getNumPropertiesSchema);
@@ -93,10 +93,37 @@ const sendApprMailSchema = yup.object({
   propertyName: yup
     .string()
     .label("propertyName")
-    .required("should be a string"),
+    .required("should be a string")
 });
+
 // JSON style of the sendApprMail Schema
 const sendApprMailJSONSchema = yupToJsonSchema(sendApprMailSchema);
+
+// Schema for setNewProperty tool
+
+// Defining the setNewProperty Schema
+const setNewProperty = yup.object().shape({
+  name: yup.string().label("name").required("Name should be a string"),
+  locationLat: yup
+    .number()
+    .label("locationLat")
+    .required("Location latitude should be a number"),
+  locationLong: yup
+    .number()
+    .label("locationLong")
+    .required("Location longitude should be a number"),
+  costPrice: yup
+    .number()
+    .label("costPrice")
+    .required("Cost price should be a number"),
+  sellingPrice: yup
+    .number()
+    .label("sellingPrice")
+    .required("Selling price should be a number")
+});
+
+// JSON style of the ssetNewProperty Schema
+const setNewPropertyJsonSchema = yupToJsonSchema(setNewProperty);
 
 // getAgentName tool definition
 const getAgentName = {
@@ -118,14 +145,14 @@ const getAgentName = {
         url: `http://localhost:3000/getAgent`,
         method: "post",
         data: {
-          propertyName,
-        },
+          propertyName
+        }
       });
       return JSON.stringify(data);
     } catch (err) {
       return "Error trying to execute the tool";
     }
-  },
+  }
 };
 
 // getSoldProperties tool definition
@@ -146,13 +173,13 @@ const getSoldProperties = {
       //console.log(propertyName);
       const { data } = await axios({
         url: `http://localhost:3000/getSold`,
-        method: "get",
+        method: "get"
       });
       return JSON.stringify(data);
     } catch (err) {
       return "Error trying to execute the tool";
     }
-  },
+  }
 };
 
 // getNumSoldProperties tool definition
@@ -172,13 +199,13 @@ const getNumSoldProperties = {
     try {
       const { data } = await axios({
         url: `http://localhost:3000/getNumSold`,
-        method: "get",
+        method: "get"
       });
       return JSON.stringify(data);
     } catch (err) {
       return "Error trying to execute the tool";
     }
-  },
+  }
 };
 
 // getTopCustomers tool definition
@@ -198,13 +225,13 @@ const getTopCustomers = {
     try {
       const { data } = await axios({
         url: `http://localhost:3000/topCustomers`,
-        method: "get",
+        method: "get"
       });
       return JSON.stringify(data);
     } catch (err) {
       return "Error trying to execute the tool";
     }
-  },
+  }
 };
 
 // getAllProperties tool definition
@@ -224,13 +251,13 @@ const getAllProperties = {
     try {
       const { data } = await axios({
         url: `http://localhost:3000/getAll`,
-        method: "get",
+        method: "get"
       });
       return JSON.stringify(data);
     } catch (err) {
       return "Error trying to execute the tool";
     }
-  },
+  }
 };
 
 // sendApprMail tool definition
@@ -254,14 +281,14 @@ const sendApprMail = {
         data: {
           customerName,
           customerEmail,
-          propertyName,
-        },
+          propertyName
+        }
       });
       return JSON.stringify(data);
     } catch (err) {
       return "Error trying to execute the tool";
     }
-  },
+  }
 };
 
 // getNumProperties tool definition
@@ -282,13 +309,53 @@ const getNumProperties = {
     try {
       const { data } = await axios({
         url: `http://localhost:3000/getTotalNum`,
-        method: "get",
+        method: "get"
       });
       return JSON.stringify(data);
     } catch (err) {
       return "Error trying to execute the tool";
     }
-  },
+  }
+};
+
+//setNewProperties tool definition
+const setNewProperties = {
+  name: "set_new_property",
+  description: "Creates a new property and adds it to the database for storage",
+  category: "hackathon",
+  subcategory: "backend",
+  functionType: "backend",
+  dangerous: false,
+  associatedCommands: [],
+  prerequisites: [],
+  parameters: setNewPropertyJsonSchema,
+  rerun: true,
+  rerunWithDifferentParameters: true,
+  runCmd: async ({
+    name,
+    locationLat,
+    locationLong,
+    costPrice,
+    sellingPrice
+  }) => {
+    try {
+      //console.log(name, locationLat, locationLong, costPrice, sellingPrice);
+      const { data } = await axios({
+        url: `http://localhost:3000/setProperty`,
+        method: "post",
+        data: {
+          name,
+          locationLat,
+          locationLong,
+          costPrice,
+          sellingPrice
+        }
+      });
+      return JSON.stringify(data);
+    } catch (err) {
+      return "Error trying to execute the tool";
+    }
+  }
 };
 
 // const PRODUCT_FINDER = {
@@ -384,5 +451,7 @@ const tools = [
   getTopCustomers,
   getAllProperties,
   getNumProperties,
+  sendApprMail,
+  setNewProperties
 ];
 module.exports = tools;
