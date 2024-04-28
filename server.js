@@ -146,6 +146,19 @@ app.get("/topCustomers", async (req, res) => {
   }
 });
 
+app.get("/topAgents", async (req, res) => {
+  try {
+    const result = await db.query(
+      "SELECT c.agent_fullname, c.agent_email, COALESCE(SUM(o.agent_rating), 0) AS total_amount FROM agents c LEFT JOIN sold_properties o ON c.id = o.agent_id GROUP BY c.id, c.agent_fullname, c.agent_email ORDER BY total_amount DESC"
+    );
+    //console.log(result.rows)
+    res.json(result.rows).status(200);
+  } catch (err) {
+    console.log(err);
+    res.send(500);
+  }
+});
+
 //sends a mail to customers to appreciate them for their patronage
 app.post("/sendThanks", (req, res) => {
   console.log(req.body);
