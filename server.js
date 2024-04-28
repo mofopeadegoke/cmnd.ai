@@ -7,6 +7,7 @@ const morgan = require("morgan");
 const app = express();
 const port = 3000;
 
+//creating a new postgres client to make queries
 const db = new pg.Client({
   user: "postgres",
   host: "localhost",
@@ -15,8 +16,9 @@ const db = new pg.Client({
   port: 5432
 });
 
+//conncts to postgres database using the credentials provided
 db.connect();
-
+//parses bodies as json so that i can work with it
 app.use(bodyParser.json());
 //using morgan for logging purpises
 app.use(morgan("tiny"));
@@ -92,13 +94,24 @@ app.get("/getAll", async (req, res) => {
   }
 });
 
-//returns the total number of properties the company has
+//returns the total number of properties the organization has
 app.get("/getTotalNum", async (req, res) => {
   try {
     const result = await db.query(
       "SELECT COUNT(DISTINCT id) AS total_properties FROM properties"
     );
     res.json(result.rows[0]).status(200);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+//returna all the agents in the organization
+app.get("/getAllAgents", async (req, res) => {
+  try {
+    const result = await db.query("SELECT * FROM agents");
+    res.json(result.rows).status(200);
   } catch (err) {
     console.log(err);
     res.sendStatus(500);
@@ -119,6 +132,7 @@ app.get("/getNumSold", async (req, res) => {
 });
 
 //first it finds the total amount of money each customer has spent, then ranks them in descending order and returns the result
+//if a customer has bought more than one property, it adds the prices of each property
 app.get("/topCustomers", async (req, res) => {
   try {
     const result = await db.query(
@@ -132,13 +146,13 @@ app.get("/topCustomers", async (req, res) => {
   }
 });
 
-//sends a mail to customer
+//sends a mail to customers to appreciate them for their patronage
 app.post("/sendThanks", (req, res) => {
   console.log(req.body);
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-      user: "dunamisolukayode@gmail.com",
+      user: "dunamisolukayode@gmail.com", //using my personal email for now
       pass: "zukh tntf zasq oqxb"
     }
   });
@@ -176,7 +190,7 @@ app.post("/setProperty", async (req, res) => {
     const locationLong = req.body.locationLong;
     const costPrice = req.body.costPrice;
     const sellingPrice = req.body.sellingPrice;
-    const result = await db.query(
+    await db.query(
       "INSERT INTO properties (property_name, property_location_lat, property_location_long, property_expected_cost_price, property_expected_selling_price) VALUES ($1, $2, $3, $4, $5)",
       [name, locationLat, locationLong, costPrice, sellingPrice]
     );

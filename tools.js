@@ -122,13 +122,24 @@ const setNewProperty = yup.object().shape({
     .required("Selling price should be a number")
 });
 
-// JSON style of the ssetNewProperty Schema
+// JSON style of the setNewProperty Schema
 const setNewPropertyJsonSchema = yupToJsonSchema(setNewProperty);
 
+// Defining the getAllAgents Schema
+const getAllAgentsSchema = yup.object({
+  agentProperty: yup
+    .string()
+    .label("numOfsoldProperties")
+    .required("should be a string")
+});
+// JSON style of the getAllAgents Schema
+const getAllAgentsSchemaJSONSchema = yupToJsonSchema(getAllAgentsSchema);
+
+//DEFINING TOOLS
 // getAgentName tool definition
 const getAgentName = {
   name: "get_agent_name",
-  description: "Gets the agent that sold a property",
+  description: "Gets the agents that has only sold a property or more",
   category: "hackathon",
   subcategory: "backend",
   functionType: "backend",
@@ -158,7 +169,7 @@ const getAgentName = {
 // getSoldProperties tool definition
 const getSoldProperties = {
   name: "get_sold_properties",
-  description: "Gets the names of the properties that have been sold",
+  description: "Gets the names of the properties that have only been sold",
   category: "hackathon",
   subcategory: "backend",
   functionType: "backend",
@@ -185,7 +196,7 @@ const getSoldProperties = {
 // getNumSoldProperties tool definition
 const getNumSoldProperties = {
   name: "get_num_sold_properties",
-  description: "Gets the numbers of the properties that have been sold",
+  description: "Gets the numbers of the properties that have only been sold",
   category: "hackathon",
   subcategory: "backend",
   functionType: "backend",
@@ -195,7 +206,7 @@ const getNumSoldProperties = {
   parameters: getNumSoldPropertiesJSONSchema,
   rerun: true,
   rerunWithDifferentParameters: true,
-  runCmd: async ({ numProperty }) => {
+  runCmd: async () => {
     try {
       const { data } = await axios({
         url: `http://localhost:3000/getNumSold`,
@@ -211,7 +222,8 @@ const getNumSoldProperties = {
 // getTopCustomers tool definition
 const getTopCustomers = {
   name: "get_top_customers",
-  description: "Gets the top paying clients",
+  description:
+    "Gets all the customers that has spent money purchasing a property or more then lists them in descending order starting from the highest paying customer",
   category: "hackathon",
   subcategory: "backend",
   functionType: "backend",
@@ -221,7 +233,7 @@ const getTopCustomers = {
   parameters: getTopCustomersJSONSchema,
   rerun: true,
   rerunWithDifferentParameters: true,
-  runCmd: async ({ Property }) => {
+  runCmd: async () => {
     try {
       const { data } = await axios({
         url: `http://localhost:3000/topCustomers`,
@@ -237,7 +249,8 @@ const getTopCustomers = {
 // getAllProperties tool definition
 const getAllProperties = {
   name: "get_all_properties",
-  description: "Gets all the properties the organization has",
+  description:
+    "Gets all the properties the organization has regardless of whether they are sold or not and returns the result",
   category: "hackathon",
   subcategory: "backend",
   functionType: "backend",
@@ -247,7 +260,7 @@ const getAllProperties = {
   parameters: getAllPropertiesJSONSchema,
   rerun: true,
   rerunWithDifferentParameters: true,
-  runCmd: async ({ Property }) => {
+  runCmd: async () => {
     try {
       const { data } = await axios({
         url: `http://localhost:3000/getAll`,
@@ -263,7 +276,8 @@ const getAllProperties = {
 // sendApprMail tool definition
 const sendApprMail = {
   name: "send_appr_mail",
-  description: "Sends appreciation mail to top customers",
+  description:
+    "Sends an appreciation mail to customers specified thanking them for their purchase and patronage",
   category: "hackathon",
   subcategory: "backend",
   functionType: "backend",
@@ -295,7 +309,7 @@ const sendApprMail = {
 const getNumProperties = {
   name: "get_num_properties",
   description:
-    "Gets the total number of the properties that the organization has",
+    "Gets the total number of the properties that the organization has regardless of whether they are sold or not",
   category: "hackathon",
   subcategory: "backend",
   functionType: "backend",
@@ -305,7 +319,7 @@ const getNumProperties = {
   parameters: getNumPropertiesJSONSchema,
   rerun: true,
   rerunWithDifferentParameters: true,
-  runCmd: async ({ numProperty }) => {
+  runCmd: async () => {
     try {
       const { data } = await axios({
         url: `http://localhost:3000/getTotalNum`,
@@ -321,7 +335,8 @@ const getNumProperties = {
 //setNewProperties tool definition
 const setNewProperties = {
   name: "set_new_property",
-  description: "Creates a new property and adds it to the database for storage",
+  description:
+    "Creates a new property the company just recently obtained and saves the data to the database",
   category: "hackathon",
   subcategory: "backend",
   functionType: "backend",
@@ -358,91 +373,33 @@ const setNewProperties = {
   }
 };
 
-// const PRODUCT_FINDER = {
-//   name: "product_finder",
-//   description:
-//     "finds and returns dummy products details from json dummy datas based on the product name passed to it",
-//   category: "hackathon",
-//   subcategory: "communication",
-//   functionType: "backend",
-//   dangerous: false,
-//   associatedCommands: [],
-//   prerequisites: [],
-//   parameters: getProductsJSONSchema,
-//   rerun: true,
-//   rerunWithDifferentParameters: true,
-//   runCmd: async ({ product }) => {
-//     try {
-//       const { data } = await axios.get(
-//         `https://dummyjson.com/products/search?q=${encodeURIComponent(product)}`
-//       );
-//       return JSON.stringify(data);
-//     } catch (err) {
-//       return "Error trying to execute the tool";
-//     }
-//   },
-// };
-
-// const weatherCitySchema = yup.object({
-//   city: yup.string().label("city").required("should be a string"),
-// });
-// const weatherCityJSONSchema = yupToJsonSchema(weatherCitySchema);
-// const WEATHER_FROM_LOCATION = {
-//   name: "city_weather_data",
-//   description: "gets the weather details from a given city name",
-//   category: "hackathon",
-//   subcategory: "communication",
-//   functionType: "backend",
-//   dangerous: false,
-//   associatedCommands: [],
-//   prerequisites: [],
-//   parameters: weatherCityJSONSchema,
-//   rerun: true,
-//   rerunWithDifferentParameters: true,
-//   runCmd: async ({ city }) => {
-//     const ApiKey = process.env.WEATHER_API_KEY;
-//     try {
-//       const { data } = await axios.get(
-//         `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${ApiKey}`
-//       );
-//       return JSON.stringify({
-//         weather: data.weather[0].description,
-//         main: data.main,
-//         coords: data.coord,
-//       });
-//     } catch (err) {
-//       return "Error trying to execute the tool";
-//     }
-//   },
-// };
-
-/*const getFilePathSchema = yup.object({
-  filePath: yup.string().label("filePath").required("should be a file path"),
-});
-const getFilePathJSONSchema = yupToJsonSchema(getFilePathSchema);
-const FILE_READER = {
-  name: "file_reader",
+// getSoldProperties tool definition
+const getAllAgents = {
+  name: "get_all_agents",
   description:
-    "returns the contents of a file given its filepath in the repository",
+    "Gets the names and email addresses of all agents in the company regardless of whether they have sold a property or not",
   category: "hackathon",
-  subcategory: "communication",
+  subcategory: "backend",
   functionType: "backend",
   dangerous: false,
   associatedCommands: [],
   prerequisites: [],
-  parameters: getFilePathJSONSchema,
+  parameters: getAllAgentsSchemaJSONSchema,
   rerun: true,
   rerunWithDifferentParameters: true,
-  runCmd: async ({ filePath }) => {
+  runCmd: async () => {
     try {
-      const buffer = fs.readFileSync(filePath);
-      const fileContents = buffer.toString("utf8");
-      return fileContents;
-    } catch (error) {
-      return "An error ocured while looking for the file content";
+      //console.log(propertyName);
+      const { data } = await axios({
+        url: `http://localhost:3000/getAllAgents`,
+        method: "get"
+      });
+      return JSON.stringify(data);
+    } catch (err) {
+      return "Error trying to execute the tool";
     }
-  },
-};*/
+  }
+};
 
 const tools = [
   getAgentName,
@@ -452,6 +409,7 @@ const tools = [
   getAllProperties,
   getNumProperties,
   sendApprMail,
-  setNewProperties
+  setNewProperties,
+  getAllAgents
 ];
 module.exports = tools;
