@@ -135,6 +135,15 @@ const getAllAgentsSchema = yup.object({
 // JSON style of the getAllAgents Schema
 const getAllAgentsSchemaJSONSchema = yupToJsonSchema(getAllAgentsSchema);
 
+// Schema for getTopCustomers tool
+
+// Defining the getNumSoldProperties  Schema
+const getTopAgentsSchema = yup.object({
+  Property: yup.string().label("topAgentsList").required("should be a string")
+});
+// JSON style of the getNumSoldProperties  Schema
+const getTopAgentsJSONSchema = yupToJsonSchema(getTopAgentsSchema);
+
 //DEFINING TOOLS
 // getAgentName tool definition
 const getAgentName = {
@@ -237,6 +246,33 @@ const getTopCustomers = {
     try {
       const { data } = await axios({
         url: `http://localhost:3000/topCustomers`,
+        method: "get"
+      });
+      return JSON.stringify(data);
+    } catch (err) {
+      return "Error trying to execute the tool";
+    }
+  }
+};
+
+// getTopCustomers tool definition
+const getTopAgents = {
+  name: "get_top_agents",
+  description:
+    "Gets all the agents that has the highest sum of customer ratings and lists them in descending order starting from the highest paying customer",
+  category: "hackathon",
+  subcategory: "backend",
+  functionType: "backend",
+  dangerous: false,
+  associatedCommands: [],
+  prerequisites: [],
+  parameters: getTopAgentsJSONSchema,
+  rerun: true,
+  rerunWithDifferentParameters: true,
+  runCmd: async () => {
+    try {
+      const { data } = await axios({
+        url: `http://localhost:3000/topAgents`,
         method: "get"
       });
       return JSON.stringify(data);
@@ -410,6 +446,7 @@ const tools = [
   getNumProperties,
   sendApprMail,
   setNewProperties,
-  getAllAgents
+  getAllAgents,
+  getTopAgents
 ];
 module.exports = tools;
